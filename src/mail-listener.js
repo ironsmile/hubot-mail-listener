@@ -51,9 +51,9 @@ module.exports = (robot) => {
   mailListener.start();
 
   mailListener.on('server:connected', () =>
-    robot.logger.info(`hubot-mail-listener connected as ${config.username} to ${config.host}:${config.port}`));
+    robot.logger.info(`hubot-mail-listener-ng connected as ${config.username} to ${config.host}:${config.port}`));
 
-  mailListener.on('error', (err) => robot.logger.error('hubot-mail-listener error', err));
+  mailListener.on('error', (err) => robot.logger.error('hubot-mail-listener-ng error', err));
 
   return mailListener.on('mail', (mail) => {
     const from = [];
@@ -70,6 +70,8 @@ module.exports = (robot) => {
 
 ${mail.text}
 `;
+
+    robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms` );
 
     return Array.from(config.rooms).map((room) =>
       robot.messageRoom(room, message));

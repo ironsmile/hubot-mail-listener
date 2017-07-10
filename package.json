@@ -1,6 +1,6 @@
 {
   "name": "hubot-mail-listener-ng",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Doychin Atanasov <ironsmile@gmail.com>",
   "description": "A mail listener plugin for hubot",
   "main": "./src/mail-listener",
