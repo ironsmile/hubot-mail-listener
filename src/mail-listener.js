@@ -63,16 +63,13 @@ module.exports = (robot) => {
 
     const date = moment(mail.date);
 
-    const message = {
-      attachments: [{
-        fallback: mail.subject,
-        color: '#3a6f8f',
-        author_name: `✉️ ${from.join(',')}`,
-        title: mail.subject,
-        text: mail.text,
-        footer: `${date.format('LLLL')}`
-      }]
-    };
+    const message = `New email:
+> _Subject:_ ${mail.subject}
+> _Author:_ ✉️ ${from.join(',')}
+> _Date:_ ${date.format('LLLL')}
+
+${mail.text}
+`;
 
     return Array.from(config.rooms).map((room) =>
       robot.messageRoom(room, message));
