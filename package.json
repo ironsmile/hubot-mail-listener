@@ -1,12 +1,12 @@
 {
-  "name": "hubot-mail-listener",
-  "version": "1.1.0",
-  "author": "Gangstead <steven@gangstead.com>",
+  "name": "hubot-mail-listener-ng",
+  "version": "1.2.0",
+  "author": "Doychin Atanasov <ironsmile@gmail.com>",
   "description": "A mail listener plugin for hubot",
   "main": "./src/mail-listener",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gangstead/hubot-mail-listener.git"
+    "url": "https://github.com/ironsmile/hubot-mail-listener-ng.git"
   },
   "scripts": {
     "lint": "eslint . --fix"
