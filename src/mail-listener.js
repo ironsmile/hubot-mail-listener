@@ -68,7 +68,9 @@ module.exports = (robot) => {
 > _Author:_ ✉️ ${from.join(',')}
 > _Date:_ ${date.format('LLLL')}
 
+\`\`\`
 ${mail.text}
+\`\`\`
 `;
 
     robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms` );
