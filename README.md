@@ -1,3 +1,5 @@
+[![npm](https://badge.fury.io/js/hubot-mail-listener-ng.svg)](https://www.npmjs.com/package/hubot-mail-listener-ng)
+
 # hubot-mail-listener-ng
 
 hubot-mail-listener adds an **IMAP** listener plugin to hubot that reports
