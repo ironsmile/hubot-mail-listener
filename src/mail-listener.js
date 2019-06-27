@@ -3,6 +3,8 @@
 const _ = require('lodash');
 const MailListener = require('mail-listener2');
 const moment = require('moment');
+const showdown = require('showdown');
+const jsdom = require('jsdom');
 
 const config = {
   rooms: (process.env.HUBOT_MAIL_LISTENER_NG_ROOMS || '').split(','),
@@ -61,6 +63,16 @@ module.exports = (robot) => {
       from.push(`${sender.name} <${sender.address}>`);
     }
 
+    let text = `
+\`\`\`
+${mail.text}
+\`\`\``;
+    if (!mail.text && mail.html) {
+      const converter = new showdown.Converter();
+      const dom = new jsdom.JSDOM();
+      text = `---
+${converter.makeMarkdown(mail.html, dom.window.document)}`;
+    }
     const date = moment(mail.date);
 
     const message = `New email:
@@ -68,9 +80,7 @@ module.exports = (robot) => {
 > _Author:_ ✉️ ${from.join(',')}
 > _Date:_ ${date.format('LLLL')}
 
-\`\`\`
-${mail.text}
-\`\`\`
+${text}
 `;
 
     robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms` );
