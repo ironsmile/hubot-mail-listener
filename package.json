@@ -21,7 +21,7 @@
     "imap"
   ],
   "dependencies": {
-    "jsdom": "^15.1.1",
+    "jsdom": "*",
     "lodash": "^4.0.0",
     "mail-listener2": "~0.3.1",
     "moment": "^2.17.1",
