@@ -16,6 +16,7 @@ const config = {
   tlsOptions: { rejectUnauthorized: false },
   mailbox: process.env.HUBOT_MAIL_LISTENER_NG_MAILBOX || 'INBOX',
   searchFilter: (process.env.HUBOT_MAIL_LISTENER_NG_SEARCH_FILTER || '').split(','),
+  trustedEmails: (process.env.HUBOT_MAIL_LISTENER_NG_TRUSTED_EMAILS || '').split(','),
   markSeen: _.get(process.env, 'HUBOT_MAIL_LISTENER_NG_MARK_SEEN', true),
   fetchUnreadOnStart: process.env.HUBOT_MAIL_LISTENER_NG_FETCH_UNREAD
 };
@@ -59,19 +60,28 @@ module.exports = (robot) => {
 
   return mailListener.on('mail', (mail) => {
     const from = [];
+    let trusted = false;
     for (const sender of Array.from(mail.from)) {
       from.push(`${sender.name} <${sender.address}>`);
+      if (config.trustedEmails.indexOf(sender.address) !== -1) {
+        trusted = true;
+      }
     }
-
-    let text = `
+    let text = '';
+    if (trusted) {
+      text = `---
+${mail.text}`;
+    } else {
+      text = `
 \`\`\`
 ${mail.text}
 \`\`\``;
-    if (!mail.text && mail.html) {
-      const converter = new showdown.Converter();
-      const dom = new jsdom.JSDOM();
-      text = `---
+      if (!mail.text && mail.html) {
+        const converter = new showdown.Converter();
+        const dom = new jsdom.JSDOM();
+        text = `---
 ${converter.makeMarkdown(mail.html, dom.window.document)}`;
+      }
     }
     const date = moment(mail.date);
 
@@ -83,7 +93,7 @@ ${converter.makeMarkdown(mail.html, dom.window.document)}`;
 ${text}
 `;
 
-    robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms` );
+    robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms`);
 
     return Array.from(config.rooms).map((room) =>
       robot.messageRoom(room, message));
