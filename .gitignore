@@ -14,3 +14,7 @@ build
 
 node_modules
 coverage
+
+package-lock.json
+
+.idea
