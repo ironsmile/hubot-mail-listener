@@ -17,6 +17,7 @@ const config = {
   mailbox: process.env.HUBOT_MAIL_LISTENER_NG_MAILBOX || 'INBOX',
   searchFilter: (process.env.HUBOT_MAIL_LISTENER_NG_SEARCH_FILTER || '').split(','),
   trustedEmails: (process.env.HUBOT_MAIL_LISTENER_NG_TRUSTED_EMAILS || '').split(','),
+  mailToRoom: (JSON.parse(process.env.HUBOT_MAIL_LISTENER_NG_EMAIL_TO_ROOM) || {}),
   markSeen: _.get(process.env, 'HUBOT_MAIL_LISTENER_NG_MARK_SEEN', true),
   fetchUnreadOnStart: process.env.HUBOT_MAIL_LISTENER_NG_FETCH_UNREAD
 };
@@ -61,10 +62,14 @@ module.exports = (robot) => {
   return mailListener.on('mail', (mail) => {
     const from = [];
     let trusted = false;
+    let toSpecialRoom = false;
     for (const sender of Array.from(mail.from)) {
       from.push(`${sender.name} <${sender.address}>`);
       if (config.trustedEmails.indexOf(sender.address) !== -1) {
         trusted = true;
+      }
+      if (config.mailToRoom.hasOwnProperty(sender.address)) {
+        toSpecialRoom = config.mailToRoom[sender.address];
       }
     }
     let text = '';
@@ -94,7 +99,9 @@ ${text}
 `;
 
     robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms`);
-
+    if (toSpecialRoom) {
+      return robot.messageRoom(toSpecialRoom, message);
+    }
     return Array.from(config.rooms).map((room) =>
       robot.messageRoom(room, message));
   });
