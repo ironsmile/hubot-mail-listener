@@ -97,11 +97,11 @@ ${converter.makeMarkdown(mail.html, dom.window.document)}`;
 
 ${text}
 `;
-
-    robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms`);
     if (toSpecialRoom) {
+      robot.logger.info(`Publishing email with subject '${mail.subject}' to chat ${toSpecialRoom}`);
       return robot.messageRoom(toSpecialRoom, message);
     }
+    robot.logger.info(`Publishing email with subject '${mail.subject}' to chat rooms`);
     return Array.from(config.rooms).map((room) =>
       robot.messageRoom(room, message));
   });
